@@ -6,7 +6,7 @@ const serviceAccount = require("../config/firebaseServiceAccount.json"); // 🔐
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "dalabsite.appspot.com", // 🔁 Replace with your Firebase Storage bucket
+  storageBucket: "no-qash-project.appspot.com", // 🔁 Replace with your Firebase Storage bucket
 });
 
 const bucket = admin.storage().bucket();

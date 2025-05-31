@@ -1,49 +1,42 @@
 const Exam = require("../models/Exam");
 const Question = require("../models/Question");
 
-// Create a new exam
+// ✅ Create a new exam
 const createExam = async (req, res) => {
   try {
     const {
       title,
       description,
-      trueFalseQuestions,
-      multipleChoiceQuestions,
-      directQuestions,
-      shuffleQuestions,
+      trueFalseQuestions = [],
+      multipleChoiceQuestions = [],
+      directQuestions = [],
+      shuffleQuestions = false,
     } = req.body;
 
+    // Combine all question IDs
     const allQuestionIds = [
       ...trueFalseQuestions,
       ...multipleChoiceQuestions,
       ...directQuestions,
     ];
 
-    const validQuestions = await Question.find({
-      _id: { $in: allQuestionIds },
-    });
-
+    // ✅ Validate all questions exist
+    const validQuestions = await Question.find({ _id: { $in: allQuestionIds } });
     if (validQuestions.length !== allQuestionIds.length) {
       return res.status(400).json({ error: "Some questions are invalid." });
     }
 
-    // Validate minimum counts
-    if (trueFalseQuestions.length < 7) {
-      return res
-        .status(400)
-        .json({ error: "Minimum 7 True/False questions required." });
-    }
-    if (multipleChoiceQuestions.length < 10) {
-      return res
-        .status(400)
-        .json({ error: "Minimum 10 Multiple Choice questions required." });
-    }
-    if (directQuestions.length < 7) {
-      return res
-        .status(400)
-        .json({ error: "Minimum 7 Direct questions required." });
-    }
+    // ✅ Validate minimum question counts
+    if (trueFalseQuestions.length < 7)
+      return res.status(400).json({ error: "Minimum 7 True/False questions required." });
 
+    if (multipleChoiceQuestions.length < 10)
+      return res.status(400).json({ error: "Minimum 10 Multiple Choice questions required." });
+
+    if (directQuestions.length < 7)
+      return res.status(400).json({ error: "Minimum 7 Direct questions required." });
+
+    // ✅ Create exam
     const newExam = await Exam.create({
       title,
       description,
@@ -51,7 +44,7 @@ const createExam = async (req, res) => {
       multipleChoiceQuestions,
       directQuestions,
       shuffleQuestions,
-      createdBy: req.user.id,
+      createdBy: req.user.id, // From auth middleware
     });
 
     res.status(201).json(newExam);
@@ -61,7 +54,7 @@ const createExam = async (req, res) => {
   }
 };
 
-// Get all exams
+// ✅ Get all exams
 const getExams = async (req, res) => {
   try {
     const exams = await Exam.find().populate("createdBy", "name email");
@@ -71,13 +64,14 @@ const getExams = async (req, res) => {
   }
 };
 
-// Get a single exam by ID
+// ✅ Get a single exam by ID
 const getExamById = async (req, res) => {
   try {
     const exam = await Exam.findById(req.params.id)
       .populate("trueFalseQuestions")
       .populate("multipleChoiceQuestions")
       .populate("directQuestions");
+
     if (!exam) return res.status(404).json({ error: "Exam not found" });
 
     res.json(exam);
@@ -86,13 +80,10 @@ const getExamById = async (req, res) => {
   }
 };
 
-// Update an exam
+// ✅ Update an exam
 const updateExam = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedExam = await Exam.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedExam = await Exam.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
     if (!updatedExam) return res.status(404).json({ error: "Exam not found" });
 
@@ -102,15 +93,22 @@ const updateExam = async (req, res) => {
   }
 };
 
-// Delete an exam
+// ✅ Delete an exam
 const deleteExam = async (req, res) => {
   try {
-    const { id } = req.params;
-    await Exam.findByIdAndDelete(id);
+    const exam = await Exam.findByIdAndDelete(req.params.id);
+    if (!exam) return res.status(404).json({ error: "Exam not found" });
+
     res.json({ message: "Exam deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-module.exports = { createExam, getExams, getExamById, updateExam, deleteExam };
+module.exports = {
+  createExam,
+  getExams,
+  getExamById,
+  updateExam,
+  deleteExam,
+};
