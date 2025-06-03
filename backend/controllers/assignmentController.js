@@ -7,7 +7,7 @@ exports.getAssignments = async (req, res) => {
     const assignments = await Assignment.find({ teacherId }).sort({
       dueDate: 1,
     });
-
+//////////
     res.status(200).json(assignments);
   } catch (error) {
     res.status(500).json({ message: "Failed to get assignments", error });
