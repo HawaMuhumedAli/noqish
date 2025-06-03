@@ -263,22 +263,13 @@ function Home() {
               //   name: "Abdimalik Muse Rage",
               //   role: "UI/UX Visionary",
               //   expertise: "Interaction Design",
-              // },
-              // {
-              //   name: "Ahmed Ali Osman",
-              //   role: "Frontend Engineer",
-              //   expertise: "Web Development",
-              // },
+              
               {
                 name: "Hawa Mohamed Ali",
                 role: "Frontend Developer",
                 expertise: "Web App",
               },
-              // {
-              //   name: "Adam Mohamed Abdi",
-              //   role: "Full-Stack Developer",
-              //   expertise: " Web Apps",
-              // },
+             
             ].map((member, index) => (
               <motion.div
                 key={index}
@@ -376,7 +367,7 @@ function Home() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-5 h-5" />
-                +252 612 011 700
+                +252 618 66 92 200
               </li>
             </ul>
           </div>
