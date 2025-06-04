@@ -26,6 +26,7 @@ const uploadToFirebase = async (file) => {
           },
         },
       })
+      ///
       .on("error", reject)
       .on("finish", () => {
         const url = `https://firebasestorage.googleapis.com/v0/b/${
